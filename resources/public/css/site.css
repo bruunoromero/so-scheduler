@@ -13,13 +13,18 @@ body {
 .cpu-column {
   flex: 2;
   display: flex;
+  max-width: 70%;
   flex-direction: column; }
 
 .cores-row {
   flex: 1; }
 
+.scrollable-x {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap; }
+
 .processes-row {
-  flex: 1;
   background-color: palevioletred; }
 
 .settings-column {
@@ -30,3 +35,11 @@ body {
   flex-direction: column;
   justify-content: center;
   background-color: #f0f0f0; }
+
+.process {
+  margin: 15px;
+  padding: 50px;
+  font-size: 22px;
+  text-align: center;
+  display: inline-block;
+  border: 1px solid black; }

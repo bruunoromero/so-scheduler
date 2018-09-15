@@ -7,7 +7,8 @@
 (defn create-processes! []
   (->> (range (rand-int 10))
     (map p/create-process!)
-    (sort-processes)))
+    (sort-processes)
+    (vec)))
 
 (defn push-process [processes process]
   (-> processes
