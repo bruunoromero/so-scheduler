@@ -15,12 +15,6 @@
     (conj process)
     (sort-processes)))
 
-(defn next-process [processes]
-  (first processes))
-
-(defn pop-process [processes process]
-  (remove #(= (:id process) %) processes))
-
 (defn scheduler [state]
   (let [ables (:ables state)
         running (:running state)
