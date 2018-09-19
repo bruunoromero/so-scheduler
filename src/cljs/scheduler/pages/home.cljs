@@ -1,5 +1,7 @@
 (ns scheduler.pages.home
-  (:require [scheduler.utils :as utils]
+  (:require [cljs-time.coerce :as c]
+            [cljs-time.core :as time]
+            [scheduler.utils :as utils]
             [scheduler.state :as state]))
 
 (defn select-algorithm [e]
@@ -54,6 +56,15 @@
     [:div
       [:span "Tempo: "]
       [:span (str (:time process))]]
+    [:div
+      [:span "Expira em: "]
+      [:span (c/to-string (:deadline process))]]
+    [:div
+      [:span "Agora: "]
+      [:span (c/to-string (time/now))]]
+    [:div
+      [:span "igual: "]
+      [:span (time/equal? (time/now) (:deadline process))]]
     [:div
       [:span "Abortado: "]
       [:span (if (:aborted? process) "Sim" "Não")]]])
