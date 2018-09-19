@@ -23,3 +23,7 @@
     (rand-int 3)
     (rand-range! 4 20)
     (generate-interval!)))
+
+
+(defn inc-elapsed [process]
+  (update-in process [:elapsed] inc))

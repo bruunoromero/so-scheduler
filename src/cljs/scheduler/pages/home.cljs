@@ -1,7 +1,6 @@
 (ns scheduler.pages.home
   (:require [scheduler.utils :as utils]
-            [scheduler.state :as state]
-            [scheduler.api.sjf :as sjf]))
+            [scheduler.state :as state]))
 
 (defn select-algorithm [e]
   (swap! state/app-state assoc :algorithm (utils/value e)))
@@ -14,7 +13,7 @@
     (throw (js/Error. "Cannot start if cores are lower than 1"))))
 
 (defn start []
-  (state/start try-start (sjf/create-processes!)))
+  (state/start try-start))
 
 (defn set-value [key]
   #(swap! state/app-state assoc key (js/parseInt (utils/value %))))
@@ -43,13 +42,17 @@
 
 (defn ables-row []
   [:div.processes-row.scrollable-x
-    (for [able (:ables @state/app-state)] [:div.process.able "ola"])])
+    (for [able (:ables @state/app-state)] [:div.process.able {:key (:id able)} (str (:time able))])])
 
 (defn home-page []
   (fn []
     [:div.home-container
       [:div.home-column.cpu-column
-        [:div.cores-row (str @state/app-state)]
+        [:div.cores-row
+          (for [running (:running @state/app-state)]
+            [:div.process.able {:key (:id running)}
+              [:div (str (:elapsed running))]
+              [:div (str (:time running))]])]
         (ables-row)]
       (to-start-column)]))
       

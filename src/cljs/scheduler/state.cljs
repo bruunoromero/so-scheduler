@@ -1,22 +1,38 @@
 (ns scheduler.state
-  (:require [reagent.core :as r]))
+  (:require [reagent.core :as r]
+            [scheduler.api.core :as s]))
 
-(defonce app-state (r/atom {:running false
+(defonce app-state (r/atom {:running? false
                             :scheduler nil
                             :ables []
                             :staggered []
-                            :algorithm "ltg"
+                            :algorithm "sjf"
+                            :running []
                             :quantum 0
                             :cores 0}))
 
-(defn start [func processes]
-  (try
-    (swap! app-state func :running true :ables processes)
-    (catch :default e
-      (println "ERR"))))
+(defn- starter [state func]
+  (let [alg (:algorithm state)
+        new-state (func state)
+        scheduler (s/get-scheduler alg)
+        create-processes! (s/get-processes-creator alg)]
+    (assoc state :running? true :ables (create-processes!) :scheduler scheduler)))
 
-(defn scheduler []
-  (.log js/console "helloo"))
+(defn start [func]
+  (try
+    (swap! app-state #(starter % func))
+    (catch :default e
+      (println e))))
+
+(defn run-scheduler [state]
+  (let [scheduler (:scheduler state)]
+    (if scheduler
+      (scheduler state)
+      (throw (js/Error.)))))
 
 (defonce timer
-  (js/setInterval scheduler 1000))
+  (let [tick (fn []
+                (try                
+                  (swap! app-state run-scheduler)
+                  (catch :default e nil)))]
+    (js/setInterval tick 1000)))
