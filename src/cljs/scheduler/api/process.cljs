@@ -3,7 +3,7 @@
 
 (defonce id-seq (atom 0))
 
-(defrecord Process [id time elapsed status priority deadline interval]) 
+(defrecord Process [id time elapsed status priority deadline interval aborted?]) 
 
 (defn generate-interval! []
   (time/plus (time/now) (time/seconds (rand-int 20))))
@@ -22,7 +22,8 @@
     :awaiting
     (rand-int 3)
     (rand-range! 4 20)
-    (generate-interval!)))
+    (generate-interval!)
+    false))
 
 
 (defn inc-elapsed [process]
