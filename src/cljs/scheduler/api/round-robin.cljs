@@ -1,4 +1,4 @@
-(ns scheduler.api.sjf
+(ns scheduler.api.round-robin
   (:require [scheduler.api.process :as p]))
 
 (defn create-processes! []
@@ -15,9 +15,13 @@
         running (:running state)
         up-running (map #(p/inc-elapsed %) running)
         finished (filter #(= (:elapsed %) (:time %)) up-running)
-        still-running (filter #(not= (:elapsed %) (:time %)) up-running)
+        not-finished (filter #(not= (:elapsed %) (:time %)) up-running)
+        to-ables (filter #(= 0 (mod (:elapsed %) (:quantum state))) not-finished)
+        still-running (filter #(not= 0 (mod (:elapsed %) (:quantum state))) not-finished)
         free-cores (- (:cores state) (count still-running))
-        new-running (concat still-running (take free-cores ables))
         still-ables (drop free-cores ables)
+        up-ables (concat still-ables to-ables)
+        new-running (concat still-running (take free-cores ables))
         staggered (concat (:staggered state) finished)]
-    (assoc state :ables (vec still-ables) :running (vec new-running) :staggered (vec staggered))))
+    (println (map #(:id %) finished))
+    (assoc state :ables up-ables :running new-running :staggered staggered)))

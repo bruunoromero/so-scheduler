@@ -4,8 +4,8 @@
 (defn create-processes! []
   (->> (range (rand-int 10))
     (map p/create-process!)
-    (p/sort-deadline)
-    (vec)))
+    (vec)
+    (p/sort-deadline)))
 
 (defn push-process [processes process]
   (-> processes
@@ -15,14 +15,14 @@
 (defn scheduler [state]
   (let [ables (:ables state)
         running (:running state)
-        expired (->> ables 
-                  (filter #(p/expired? %))
-                  (map #(assoc % :aborted? true)))
+        expired (filter #(p/expired? %) ables)
+        not-expired (filter #(not (p/expired? %)) ables)
         up-running (map #(p/inc-elapsed %) running)
         finished (filter #(= (:elapsed %) (:time %)) up-running)
         still-running (filter #(not= (:elapsed %) (:time %)) up-running)
         free-cores (- (:cores state) (count still-running))
-        new-running (concat still-running (take free-cores ables))
-        still-ables (drop free-cores ables)
-        staggered (concat (:staggered state) finished expired)]
-    (assoc state :ables (vec still-ables) :running (vec new-running) :staggered (vec staggered))))
+        new-running (concat still-running (take free-cores not-expired))
+        still-ables (drop free-cores not-expired)
+        staggered (concat (:staggered state) finished)
+        aborted (concat (:aborted state) expired)]
+    (assoc state :ables still-ables :running new-running :staggered staggered :aborted aborted)))

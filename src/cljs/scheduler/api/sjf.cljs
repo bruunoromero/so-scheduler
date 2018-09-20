@@ -7,8 +7,8 @@
 (defn create-processes! []
   (->> (range (rand-int 10))
     (map p/create-process!)
-    (sort-processes)
-    (vec)))
+    (vec)
+    (sort-processes)))
 
 (defn push-process [processes process]
   (-> processes
@@ -25,4 +25,4 @@
         new-running (concat still-running (take free-cores ables))
         still-ables (drop free-cores ables)
         staggered (concat (:staggered state) finished)]
-    (assoc state :ables (vec still-ables) :running (vec new-running) :staggered (vec staggered))))
+    (assoc state :ables still-ables :running new-running :staggered staggered)))

@@ -29,6 +29,9 @@ body {
 .staggered-row {
   background-color: grey; }
 
+.aborted-row {
+  background-color: crimson; }
+
 .settings-column {
   flex: 1;
   display: flex;

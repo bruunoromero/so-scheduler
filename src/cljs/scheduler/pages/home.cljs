@@ -42,6 +42,13 @@
     [:div.form-group
       [:button.btn.btn-primary {:on-click start} "Executar"]]])
 
+(defn update-column []
+  [:div.home-column.settings-column
+    [:div.form-group
+      [:button.btn.btn-primary {:on-click state/push-process} "Adcionar processo"]]
+    [:div.form-group
+      [:button.btn.btn-danger {:on-click state/stop} "Parar"]]])
+
 (defn process [process state]
   [:div {:key (:id process) :class (str "process " (name state))} 
     [:div
@@ -55,19 +62,8 @@
       [:span (str (:elapsed process))]]
     [:div
       [:span "Tempo: "]
-      [:span (str (:time process))]]
-    [:div
-      [:span "Expira em: "]
-      [:span (c/to-string (:deadline process))]]
-    [:div
-      [:span "Agora: "]
-      [:span (c/to-string (time/now))]]
-    [:div
-      [:span "igual: "]
-      [:span (time/equal? (time/now) (:deadline process))]]
-    [:div
-      [:span "Abortado: "]
-      [:span (if (:aborted? process) "Sim" "Não")]]])
+      [:span (str (:time process))]]])
+
 
 (defn cores-row []
   [:div.cores-row.scrollable-x
@@ -84,11 +80,19 @@
     (for [staggered (:staggered @state/app-state)]
       (process staggered :staggered))])
 
+(defn aborted-row []
+  [:div.aborted-row.scrollable-x
+    (for [aborted (:aborted @state/app-state)]
+      (process aborted :aborted))])
+
 (defn home-page []
   (fn []
     [:div.home-container
       [:div.home-column.cpu-column
         (cores-row)
         (ables-row)
-        (staggered-row)]
-      (to-start-column)]))
+        (staggered-row)
+        (aborted-row)]
+      (if (:running? @state/app-state)
+        (update-column)
+        (to-start-column))]))
