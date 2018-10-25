@@ -22,7 +22,7 @@
     (swap! id-seq inc)
     (rand-range! 4 20)
     0
-    :awaiting
+    :esperando
     (rand-int 3)
     (expiration-time)
     (generate-interval!)))

@@ -9,6 +9,19 @@ body {
   flex-direction: row;
 }
 
+main {
+  padding: 16px;
+}
+
+.card {
+  margin-bottom: 16px;
+}
+
+.so-row {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
 .home-column {
   height: 100vh;
 }

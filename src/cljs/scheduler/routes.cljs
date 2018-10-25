@@ -1,8 +1,9 @@
 (ns scheduler.routes
-  (:require [reagent.core :refer [atom]]
-            [secretary.core :as secretary :include-macros true]
-            [accountant.core :as accountant]
-            [scheduler.pages.home :as home]))
+  (:require
+    [reagent.core :refer [atom]]
+    [scheduler.pages.home :as home]
+    [accountant.core :as accountant]
+    [secretary.core :as secretary :include-macros true]))
 
 (defonce page (atom #'home/home-page))
 

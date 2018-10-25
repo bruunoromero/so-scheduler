@@ -5,7 +5,7 @@
   (sort-by :time processes))
   
 (defn create-processes! []
-  (->> (range (rand-int 10))
+  (->> (range (rand-int 50))
     (map p/create-process!)
     (vec)
     (sort-processes)))
